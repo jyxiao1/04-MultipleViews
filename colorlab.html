@@ -1,0 +1,241 @@
+<script src="https://d3js.org/d3.v5.min.js"></script>
+
+<h1> d3 color skills lab </h1>
+
+<p>
+    Note: all scales are using Miles_per_Gallon except ColorBrewer, which switches to Origin.
+</p>
+
+<p>
+    You will want https://github.com/d3/d3-color and https://github.com/d3/d3-scale-chromatic for reference.
+</p>
+
+<div>
+    <h1> directScale </h1>
+    <svg id="directScale" width=600 height=600 />
+</div>
+
+<div>
+    <h1> HSL </h1>
+    <svg id="hsl" width=600 height=600 />
+</div>
+
+<div>
+    <h1> LAB </h1>
+    <svg id="lab" width=600 height=600 />
+</div>
+
+<div>
+    <h1> CubeHelix </h1>
+    <svg id="helix" width=600 height=600 />
+</div>
+
+<div>
+    <h1> ColorBrewer </h1>
+    <svg id="brewer" width=600 height=600 />
+</div>
+
+<style>
+    /* if any */
+</style>
+
+<script>
+    console.log(d3);
+    var margin = ({top: 20, right: 0, bottom: 30, left: 40});
+    d3.json('cars-partial.json').then(function(d) {
+        console.log(d);
+        directScale(d, '#directScale');
+        hsl(d, '#hsl');
+        lab(d, '#lab');
+        brewer(d, '#brewer');
+        helix(d, '#helix');
+
+    });
+    function directScale(data, target) {
+        var height = +d3.select(target).attr('height');
+        var width = +d3.select(target).attr('width');
+        var mpgVal = function(d) { return d.Miles_per_Gallon}; // data -> value
+        // TODO create a linear scale, mapping a domain of [0, Miles_per_Gallon max] to [blue, yellow]
+        /*var cscale = d3.scaleLinear()
+          .domain([0, d3.max(data, mpgVal)])
+          .range(["blue","yellow"]);*/
+        var cscale = d3.scaleLinear()
+            .domain([0, d3.max(data, mpgVal)])
+            .range(['blue', 'yellow']);
+        var x = d3.scaleBand()
+            .domain(data.map(d => d.Name))
+            .range([margin.left, width - margin.right])
+            .padding(0.1);
+        var y = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.Miles_per_Gallon)]).nice()
+            .range([height - margin.bottom, margin.top]);
+        var xAxis = g => g
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).tickSizeOuter(0));
+        var yAxis = g => g
+            .attr("transform", `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y));
+        var svg = d3.select(target);
+        svg.append("g")
+            .selectAll("rect")
+            .data(data)
+            .join("rect")
+            .attr("x", d => x(d.Name))
+            .attr("y", d => y(d.Miles_per_Gallon))
+            .attr("height", d => y(0) - y(d.Miles_per_Gallon))
+            .attr("width", x.bandwidth())
+            .attr("fill", function(d) { return cscale(d.Miles_per_Gallon); });
+        svg.append("g")
+            .call(xAxis);
+        svg.append("g")
+            .call(yAxis);
+    }
+    function hsl(data, target) {
+        var height = +d3.select(target).attr('height');
+        var width = +d3.select(target).attr('width');
+        var mpgVal = function(d) { return d.Miles_per_Gallon}; // data -> value
+        // TODO the same as above, but now include an interpolator for the HSL space
+        var cscale = d3.scaleLinear()
+            .interpolate(d3.interpolateHsl)
+            .domain([0, d3.max(data, mpgVal)])
+            .range(['blue', 'yellow']);
+        var x = d3.scaleBand()
+            .domain(data.map(d => d.Name))
+            .range([margin.left, width - margin.right])
+            .padding(0.1);
+        var y = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.Miles_per_Gallon)]).nice()
+            .range([height - margin.bottom, margin.top]);
+        var xAxis = g => g
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).tickSizeOuter(0));
+        var yAxis = g => g
+            .attr("transform", `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y));
+        var svg = d3.select(target);
+        svg.append("g")
+            .selectAll("rect")
+            .data(data)
+            .join("rect")
+            .attr("x", d => x(d.Name))
+            .attr("y", d => y(d.Miles_per_Gallon))
+            .attr("height", d => y(0) - y(d.Miles_per_Gallon))
+            .attr("fill", function(d) { return cscale(d.Miles_per_Gallon); })
+            .attr("width", x.bandwidth());
+        svg.append("g")
+            .call(xAxis);
+        svg.append("g")
+            .call(yAxis);
+    }
+    function lab(data, target) {
+        var height = +d3.select(target).attr('height');
+        var width = +d3.select(target).attr('width');
+        var mpgVal = function(d) { return d.Miles_per_Gallon}; // data -> value
+        // the same as before, but now with a LAB space interpolator
+        var cscale = d3.scaleLinear()
+            .interpolate(d3.interpolateLab)
+            .domain([0, d3.max(data, mpgVal)])
+            .range(['blue', 'yellow']);
+        var x = d3.scaleBand()
+            .domain(data.map(d => d.Name))
+            .range([margin.left, width - margin.right])
+            .padding(0.1);
+        var y = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.Miles_per_Gallon)]).nice()
+            .range([height - margin.bottom, margin.top]);
+        var xAxis = g => g
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).tickSizeOuter(0));
+        var yAxis = g => g
+            .attr("transform", `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y));
+        var svg = d3.select(target);
+        svg.append("g")
+            .attr("fill", cscale)
+            .selectAll("rect")
+            .data(data)
+            .join("rect")
+            .attr("x", d => x(d.Name))
+            .attr("y", d => y(d.Miles_per_Gallon))
+            .attr("height", d => y(0) - y(d.Miles_per_Gallon))
+            .attr("width", x.bandwidth())
+            .attr("fill", function(d) { return cscale(d.Miles_per_Gallon); });
+        svg.append("g")
+            .call(xAxis);
+        svg.append("g")
+            .call(yAxis);
+    }
+    function helix(data, target) {
+        var height = +d3.select(target).attr('height');
+        var width = +d3.select(target).attr('width');
+        var mpgVal = function(d) { return d.Miles_per_Gallon}; // data -> value
+        // and now a CubeHelix interpolator (new space, read up about it!)
+        var cscale = d3.scaleLinear()
+            .interpolate(d3.interpolateCubehelix)
+            .domain([0, d3.max(data, mpgVal)])
+            .range(['blue', 'yellow']);
+        var x = d3.scaleBand()
+            .domain(data.map(d => d.Name))
+            .range([margin.left, width - margin.right])
+            .padding(0.1);
+        var y = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.Miles_per_Gallon)]).nice()
+            .range([height - margin.bottom, margin.top]);
+        var xAxis = g => g
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).tickSizeOuter(0));
+        var yAxis = g => g
+            .attr("transform", `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y));
+        var svg = d3.select(target);
+        svg.append("g")
+            .selectAll("rect")
+            .data(data)
+            .join("rect")
+            .attr("x", d => x(d.Name))
+            .attr("y", d => y(d.Miles_per_Gallon))
+            .attr("height", d => y(0) - y(d.Miles_per_Gallon))
+            .attr("width", x.bandwidth())
+            .attr("fill", function(d) { return cscale(d.Miles_per_Gallon); });
+        svg.append("g")
+            .call(xAxis);
+        svg.append("g")
+            .call(yAxis);
+    }
+    function brewer(data, target) {
+        var height = +d3.select(target).attr('height');
+        var width = +d3.select(target).attr('width');
+        // This one is different. Make an ordinal scale using a Color Brewer scheme using the d3 built in tools (see the d3-scale chromatic page)
+        var cscale = d3.scaleOrdinal(d3.schemeCategory10)
+            .domain(d3.map(data, function(d) {return d.origin}).keys())
+            .range(d3.schemeCategory10);
+        var x = d3.scaleBand()
+            .domain(data.map(d => d.Name))
+            .range([margin.left, width - margin.right])
+            .padding(0.1);
+        var y = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.Miles_per_Gallon)]).nice()
+            .range([height - margin.bottom, margin.top]);
+        var xAxis = g => g
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).tickSizeOuter(0));
+        var yAxis = g => g
+            .attr("transform", `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y));
+        var svg = d3.select(target);
+        svg.append("g")
+            .selectAll("rect")
+            .data(data)
+            .join("rect")
+            .attr("x", d => x(d.Name))
+            .attr("y", d => y(d.Miles_per_Gallon))
+            .attr("height", d => y(0) - y(d.Miles_per_Gallon))
+            .attr("width", x.bandwidth())
+            //            .attr("fill", function(d) { return cscale(d.Origin); })
+            .attr("fill", function(d) { return cscale(d.Origin); }); // NOTE switch from Miles_per_Gallon to Origin here
+        svg.append("g")
+            .call(xAxis);
+        svg.append("g")
+            .call(yAxis);
+    }
+</script>

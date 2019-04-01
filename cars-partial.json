@@ -1,0 +1,67 @@
+[ {
+  "Name":"pontiac catalina",
+  "Miles_per_Gallon":14,
+  "Cylinders":8,
+  "Displacement":400,
+  "Horsepower":175,
+  "Weight_in_lbs":4385,
+  "Acceleration":12,
+  "Year":"1972-01-01",
+  "Origin":"USA"
+},
+  {
+    "Name":"plymouth fury iii",
+    "Miles_per_Gallon":15,
+    "Cylinders":8,
+    "Displacement":318,
+    "Horsepower":150,
+    "Weight_in_lbs":4135,
+    "Acceleration":13.5,
+    "Year":"1972-01-01",
+    "Origin":"Canada"
+  },
+  {
+    "Name":"ford galaxie 500",
+    "Miles_per_Gallon":14,
+    "Cylinders":8,
+    "Displacement":351,
+    "Horsepower":153,
+    "Weight_in_lbs":4129,
+    "Acceleration":13,
+    "Year":"1972-01-01",
+    "Origin":"USA"
+  },
+  {
+    "Name":"amc ambassador sst",
+    "Miles_per_Gallon":17,
+    "Cylinders":8,
+    "Displacement":304,
+    "Horsepower":150,
+    "Weight_in_lbs":3672,
+    "Acceleration":11.5,
+    "Year":"1972-01-01",
+    "Origin":"Australia"
+  },
+  {
+    "Name":"mercury marquis",
+    "Miles_per_Gallon":11,
+    "Cylinders":8,
+    "Displacement":429,
+    "Horsepower":208,
+    "Weight_in_lbs":4633,
+    "Acceleration":11,
+    "Year":"1972-01-01",
+    "Origin":"Japan"
+  },
+  {
+    "Name":"buick lesabre custom",
+    "Miles_per_Gallon":13,
+    "Cylinders":8,
+    "Displacement":350,
+    "Horsepower":155,
+    "Weight_in_lbs":4502,
+    "Acceleration":13.5,
+    "Year":"1972-01-01",
+    "Origin":"Mexico"
+  }
+]
